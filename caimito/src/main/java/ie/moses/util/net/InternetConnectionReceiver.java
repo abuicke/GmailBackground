@@ -30,7 +30,7 @@ public class InternetConnectionReceiver extends SpecializedBroadcastReceiver {
     }
 
     @Override
-//    @RequiresPermission(ACCESS_NETWORK_STATE)
+    @RequiresPermission(ACCESS_NETWORK_STATE)
     public final void onReceive(Context context, Intent intent) {
         checkPermission(context, ACCESS_NETWORK_STATE);
         ConnectivityManager connectivityManager =
