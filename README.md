@@ -1,5 +1,5 @@
 # My fork of GmailBackground
-a small library to send a email in background withou user interaction 
+A small library to send an email in the background without user interaction .
 ```java
         new BackgroundMail.Builder(this)
                     .withUsername("user@gmail.com")
