@@ -26,7 +26,7 @@ a small library to send a email in background withou user interaction
 
 ```groovy
 dependencies {
-    implementation 'ie.moses.gmailbackgroundlibrary:gmailbackgroundlibrary:1.0.0'
+    implementation 'ie.moses.gmailbackgroundlibrary:gmailbackgroundlibrary:1.0.1'
 }
 ```
 
