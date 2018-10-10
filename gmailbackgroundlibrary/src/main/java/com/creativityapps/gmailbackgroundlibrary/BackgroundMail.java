@@ -1,276 +1,72 @@
 package com.creativityapps.gmailbackgroundlibrary;
 
-import android.app.Fragment;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.creativityapps.gmailbackgroundlibrary.util.EmailType;
 import com.creativityapps.gmailbackgroundlibrary.util.GmailSender;
-import com.creativityapps.gmailbackgroundlibrary.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
+import ie.moses.util.Callback;
+
+import static android.Manifest.permission.ACCESS_NETWORK_STATE;
+import static android.Manifest.permission.INTERNET;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static ie.moses.util.android.PermissionUtils.checkPermission;
 
 
 public class BackgroundMail {
-    String TAG = "BackgroundMail";
-    private String username;
-    private String password;
-    private String mailto;
-    private String subject;
-    private String body;
-    private String type;
-    private String sendingMessage;
-    private String sendingMessageSuccess;
-    private String sendingMessageError;
-    private boolean processVisibility = true;
-    private ArrayList<String> attachments = new ArrayList<>();
-    private Context mContext;
-    private OnSuccessCallback onSuccessCallback;
-    private OnFailCallback onFailCallback;
 
-    public final static String TYPE_PLAIN = "text/plain";
-    public final static String TYPE_HTML = "text/html";
+    private static final String TAG = BackgroundMail.class.getSimpleName();
 
-    public interface OnSuccessCallback {
-        void onSuccess();
+    private Context _context;
+
+    private String _username;
+    private String _password;
+    private String _mailto;
+    private String _subject;
+    private String _body;
+    private String _type;
+    private String _progressMessage;
+    private boolean _showProgressDialog = true;
+    private final ArrayList<String> _attachments = new ArrayList<>();
+
+    private Callback<Void> _onSuccessCallback;
+    private Callback<Void> _onFailCallback;
+
+    private BackgroundMail(Context context) {
+        _context = context;
     }
-
-    public interface OnFailCallback {
-        void onFail();
-    }
-
-    public BackgroundMail(Fragment fragment) {
-        this(fragment.getActivity().getApplicationContext());
-    }
-
-    public BackgroundMail(Context context) {
-        this.mContext = context;
-        this.sendingMessage = context.getString(R.string.msg_sending_email);
-        this.sendingMessageSuccess = context.getString(R.string.msg_email_sent_successfully);
-        this.sendingMessageError=context.getString(R.string.msg_error_sending_email);
-    }
-
-    private BackgroundMail(Builder builder) {
-        mContext = builder.context;
-        attachments = builder.attachments;
-        username = builder.username;
-        password = builder.password;
-        mailto = builder.mailto;
-        subject = builder.subject;
-        body = builder.body;
-        type = builder.type;
-        setSendingMessage(builder.sendingMessage);
-        setSendingMessageSuccess(builder.sendingMessageSuccess);
-        setSendingMessageError(builder.sendingMessageError);
-        processVisibility = builder.processVisibility;
-        setOnSuccessCallback(builder.onSuccessCallback);
-        setOnFailCallback(builder.onFailCallback);
-    }
-
-    public static Builder newBuilder(Context context) {
-        return new Builder(context);
-    }
-
-    public static Builder newBuilder(Fragment fragment) {
-        return new Builder(fragment.getActivity().getApplicationContext());
-    }
-
-    public void setGmailUserName(@NonNull String string) {
-        this.username = string;
-    }
-
-    public void setGmailUserName(@StringRes int strRes) {
-        this.username = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getGmailUserName() {
-        return username;
-    }
-
-    public void setGmailPassword(@NonNull String string) {
-        this.password = string;
-    }
-
-    public void setGmailPassword(@StringRes int strRes) {
-        this.password = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getGmailPassword() {
-        return password;
-    }
-
-    public void setType(@NonNull String string) {
-        this.type = string;
-    }
-
-    public void setType(@StringRes int strRes) {
-        this.type = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getType() {
-        return type;
-    }
-
-    public void showVisibleProgress(boolean state) {
-        this.processVisibility = state;
-    }
-
-    public boolean isProgressVisible() {
-        return processVisibility;
-    }
-
-    public void setMailTo(@NonNull String string) {
-        this.mailto = string;
-    }
-
-    public void setMailTo(@StringRes int strRes) {
-        this.mailto = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getMailTo() {
-        return mailto;
-    }
-
-    public void setFormSubject(@NonNull String string) {
-        this.subject = string;
-    }
-
-    public void setFormSubject(@StringRes int strRes) {
-        this.subject = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getFormSubject() {
-        return subject;
-    }
-
-    public void setFormBody(@NonNull String string) {
-        this.body = string;
-    }
-
-    public void setFormBody(@StringRes int strRes) {
-        this.body = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getFormBody() {
-        return body;
-    }
-
-    public void setSendingMessage(@NonNull String string) {
-        this.sendingMessage = string;
-    }
-
-    public void setSendingMessage(@StringRes int strRes) {
-        this.sendingMessage = mContext.getResources().getString(strRes);
-    }
-
-    @NonNull
-    public String getSendingMessage() {
-        return sendingMessage;
-    }
-
-    public void setSendingMessageSuccess(@Nullable String string) {
-        this.sendingMessageSuccess = string;
-    }
-
-    public void setSendingMessageSuccess(@StringRes int strRes) {
-        this.sendingMessageSuccess = mContext.getResources().getString(strRes);
-    }
-
-    @Nullable
-    public String getSendingMessageSuccess() {
-        return sendingMessageSuccess;
-    }
-
-    public void setSendingMessageError(@Nullable String string) {
-        this.sendingMessageError = string;
-    }
-
-    public void setSendingMessageError(@StringRes int strRes) {
-        this.sendingMessageError = mContext.getResources().getString(strRes);
-    }
-
-    @Nullable
-    public String getSeningMessageError() {
-        return sendingMessageError;
-    }
-
-    public void addAttachment(@NonNull String attachment) {
-        this.attachments.add(attachment);
-    }
-
-    public void addAttachment(@StringRes int strRes) {
-        this.attachments.add(mContext.getResources().getString(strRes));
-    }
-
-    public void addAttachments(@NonNull List<String> attachments) {
-        this.attachments.addAll(attachments);
-    }
-
-    public void addAttachments(String...attachments) {
-        this.attachments.addAll(Arrays.asList(attachments));
-    }
-
-    @NonNull
-    public List<String> getAttachments() {
-        return attachments;
-    }
-
-    public void setOnSuccessCallback(OnSuccessCallback onSuccessCallback) {
-        this.onSuccessCallback = onSuccessCallback;
-    }
-
-    public void setOnFailCallback(OnFailCallback onFailCallback) {
-        this.onFailCallback = onFailCallback;
-    }
-
 
     public void send() {
-
-        if (TextUtils.isEmpty(username)) {
-            throw new IllegalArgumentException("You didn't set a Gmail username");
-        }
-        if (TextUtils.isEmpty(password)) {
-            throw new IllegalArgumentException("You didn't set a Gmail password");
-        }
-        if (TextUtils.isEmpty(mailto)) {
-            throw new IllegalArgumentException("You didn't set a Gmail recipient");
-        }
-        if (TextUtils.isEmpty(body)) {
-            throw new IllegalArgumentException("You didn't set a body");
-        }
-        if (TextUtils.isEmpty(subject)) {
-            throw new IllegalArgumentException("You didn't set a subject");
-        }
-        if (!Utils.isNetworkAvailable(mContext)) {
-            Log.d(TAG, "you need internet connection to send the email");
-        }
-        new SendEmailTask().execute();
+        checkState(!TextUtils.isEmpty(_username), "You didn't set a Gmail username");
+        checkState(!TextUtils.isEmpty(_password), "You didn't set a Gmail password");
+        checkState(!TextUtils.isEmpty(_mailto), "You didn't set a Gmail recipient");
+        checkState(!TextUtils.isEmpty(_body), "You didn't set a body");
+        checkState(!TextUtils.isEmpty(_subject), "You didn't set a subject");
+        SendEmailTask sendEmailTask = new SendEmailTask();
+        sendEmailTask.execute();
     }
 
-    public class SendEmailTask extends AsyncTask<String, Void, Boolean> {
+    @SuppressLint("StaticFieldLeak")
+    private class SendEmailTask extends AsyncTask<String, Void, Boolean> {
+
         private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (processVisibility) {
-                progressDialog = new ProgressDialog(mContext);
-                progressDialog.setMessage(sendingMessage);
+            if (_showProgressDialog) {
+                progressDialog = new ProgressDialog(_context);
+                progressDialog.setMessage(_progressMessage);
                 progressDialog.setCancelable(false);
                 progressDialog.show();
             }
@@ -279,17 +75,15 @@ public class BackgroundMail {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                GmailSender sender = new GmailSender(username, password);
-                if (!attachments.isEmpty()) {
-                    for (int i = 0; i < attachments.size(); i++) {
-                        if (!attachments.get(i).isEmpty()) {
-                            sender.addAttachment(attachments.get(i));
-                        }
+                GmailSender sender = new GmailSender(_username, _password);
+                for (String attachment : _attachments) {
+                    if (attachment.isEmpty()) {
+                        sender.addAttachment(attachment);
                     }
                 }
-                sender.sendMail(subject, body, username, mailto, type);
+                sender.sendMail(_subject, _body, _username, _mailto, _type);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "send email failed", e);
                 return false;
             }
             return true;
@@ -298,21 +92,15 @@ public class BackgroundMail {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if (processVisibility) {
+            if (_showProgressDialog) {
                 progressDialog.dismiss();
                 if (result) {
-                    if (!TextUtils.isEmpty(sendingMessageSuccess)) {
-                        Toast.makeText(mContext, sendingMessageSuccess, Toast.LENGTH_SHORT).show();
+                    if (_onSuccessCallback != null) {
+                        _onSuccessCallback.call(null);
                     }
-                    if (onSuccessCallback != null) {
-                        onSuccessCallback.onSuccess();
-                    }
-                }else {
-                    if (!TextUtils.isEmpty(sendingMessageError)) {
-                        Toast.makeText(mContext, sendingMessageError, Toast.LENGTH_SHORT).show();
-                    }
-                    if (onFailCallback != null) {
-                        onFailCallback.onFail();
+                } else {
+                    if (_onFailCallback != null) {
+                        _onFailCallback.call(null);
                     }
                 }
             }
@@ -320,157 +108,94 @@ public class BackgroundMail {
     }
 
     public static final class Builder {
-        private Context context;
-        private String username;
-        private String password;
-        private String mailto;
-        private String subject;
-        private String body;
-        private String type = BackgroundMail.TYPE_PLAIN;
-        private ArrayList<String> attachments = new ArrayList<>();
-        private String sendingMessage;
-        private String sendingMessageSuccess;
-        private String sendingMessageError;
-        private boolean processVisibility = true;
-        private OnSuccessCallback onSuccessCallback;
-        private OnFailCallback onFailCallback;
 
-        private Builder(Context context) {
-            this.context = context;
-            this.sendingMessage = context.getString(R.string.msg_sending_email);
-            this.sendingMessageSuccess = context.getString(R.string.msg_email_sent_successfully);
-            this.sendingMessageError=context.getString(R.string.msg_error_sending_email);
+        private final BackgroundMail _instance;
+
+        @RequiresPermission(allOf = {ACCESS_NETWORK_STATE, INTERNET})
+        public Builder(Context context) {
+            checkPermission(context, ACCESS_NETWORK_STATE);
+            checkPermission(context, INTERNET);
+            _instance = new BackgroundMail(context);
         }
 
-        public Builder withUsername(@NonNull String username) {
-            this.username = username;
+        public Builder withUsername(String username) {
+            checkNotNull(username);
+            _instance._username = username;
             return this;
         }
 
-        public Builder withUsername(@StringRes int usernameRes) {
-            this.username = context.getResources().getString(usernameRes);
+        public Builder withPassword(String password) {
+            checkNotNull(password);
+            _instance._password = password;
             return this;
         }
 
-        public Builder withPassword(@NonNull String password) {
-            this.password = password;
+        public Builder withMailto(String mailto) {
+            checkNotNull(mailto);
+            _instance._mailto = mailto;
             return this;
         }
 
-        public Builder withPassword(@StringRes int passwordRes) {
-            this.password = context.getResources().getString(passwordRes);
+        public Builder withSubject(String subject) {
+            checkNotNull(subject);
+            _instance._subject = subject;
             return this;
         }
 
-        public Builder withMailto(@NonNull String mailto) {
-            this.mailto = mailto;
+        public Builder withType(@EmailType String type) {
+            checkNotNull(type);
+            _instance._type = type;
             return this;
         }
 
-        public Builder withMailto(@StringRes int mailtoRes) {
-            this.mailto = context.getResources().getString(mailtoRes);
+        public Builder withBody(String body) {
+            checkNotNull(body);
+            _instance._body = body;
             return this;
         }
 
-        public Builder withSubject(@NonNull String subject) {
-            this.subject = subject;
+        public Builder withAttachments(ArrayList<String> attachments) {
+            checkNotNull(attachments);
+            _instance._attachments.addAll(attachments);
             return this;
         }
 
-        public Builder withSubject(@StringRes int subjectRes) {
-            this.subject = context.getResources().getString(subjectRes);
+        public Builder withAttachments(String... attachments) {
+            checkNotNull(attachments);
+            _instance._attachments.addAll(Arrays.asList(attachments));
             return this;
         }
 
-        //set email mime type
-        public Builder withType(@NonNull String type) {
-            this.type = type;
+        public Builder withProgressMessage(String progressMessage) {
+            checkNotNull(progressMessage);
+            _instance._progressMessage = progressMessage;
             return this;
         }
 
-        public Builder withType(@StringRes int typeRes) {
-            this.type = context.getResources().getString(typeRes);
+        public Builder withProgressDialog(boolean showProgressDialog) {
+            _instance._showProgressDialog = showProgressDialog;
             return this;
         }
 
-        public Builder withBody(@NonNull String body) {
-            this.body = body;
+        public Builder withOnSuccessCallback(Callback<Void> onSuccessCallback) {
+            checkNotNull(onSuccessCallback);
+            _instance._onSuccessCallback = onSuccessCallback;
             return this;
         }
 
-        public Builder withBody(@StringRes int bodyRes) {
-            this.body = context.getResources().getString(bodyRes);
-            return this;
-        }
-
-        public Builder withAttachments(@NonNull ArrayList<String> attachments) {
-            this.attachments.addAll(attachments);
-            return this;
-        }
-
-        public Builder withAttachments(String...attachments) {
-            this.attachments.addAll(Arrays.asList(attachments));
-            return this;
-        }
-
-        public Builder withAttachments(@ArrayRes int attachmentsRes) {
-            this.attachments.addAll(Arrays.asList(context.getResources().getStringArray(attachmentsRes)));
-            return this;
-        }
-
-        public Builder withSendingMessage(@NonNull String sendingMessage) {
-            this.sendingMessage = sendingMessage;
-            return this;
-        }
-
-        public Builder withSendingMessage(@StringRes int sendingMessageRes) {
-            this.sendingMessage = context.getResources().getString(sendingMessageRes);
-            return this;
-        }
-
-        public Builder withSendingMessageSuccess(@Nullable String sendingMessageSuccess) {
-            this.sendingMessageSuccess = sendingMessageSuccess;
-            return this;
-        }
-
-        public Builder withSendingMessageSuccess(@StringRes int sendingMessageSuccessRes) {
-            this.sendingMessageSuccess = context.getResources().getString(sendingMessageSuccessRes);
-            return this;
-        }
-
-        public Builder withSendingMessageError(@Nullable String sendingMessageError) {
-            this.sendingMessageError = sendingMessageError;
-            return this;
-        }
-
-        public Builder withSendingMessageError(@StringRes int sendingMessageError) {
-            this.sendingMessageError = context.getResources().getString(sendingMessageError);
-            return this;
-        }
-
-        public Builder withProcessVisibility(boolean processVisibility) {
-            this.processVisibility = processVisibility;
-            return this;
-        }
-
-        public Builder withOnSuccessCallback(OnSuccessCallback onSuccessCallback) {
-            this.onSuccessCallback = onSuccessCallback;
-            return this;
-        }
-
-        public Builder withOnFailCallback(OnFailCallback onFailCallback) {
-            this.onFailCallback = onFailCallback;
+        public Builder withOnFailCallback(Callback<Void> onFailCallback) {
+            checkNotNull(onFailCallback);
+            _instance._onFailCallback = onFailCallback;
             return this;
         }
 
         public BackgroundMail build() {
-            return new BackgroundMail(this);
+            return _instance;
         }
 
-        public BackgroundMail send() {
-            BackgroundMail backgroundMail = build();
-            backgroundMail.send();
-            return backgroundMail;
+        public void send() {
+            build().send();
         }
     }
+
 }
