@@ -28,7 +28,7 @@ dependencies {
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <uses-permission android:name="android.permission.INTERNET"/>
 ```
-**attachments**
+**Attachments**
 
  for attachments you need set READ_EXTERNAL_STORAGE permission in your manifiest 
  ```xml
