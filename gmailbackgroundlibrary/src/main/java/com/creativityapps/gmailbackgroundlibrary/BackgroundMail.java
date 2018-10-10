@@ -14,14 +14,13 @@ import com.creativityapps.gmailbackgroundlibrary.util.GmailSender;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import ie.moses.util.Callback;
+import ie.moses.caimito.Callback;
 
 import static android.Manifest.permission.ACCESS_NETWORK_STATE;
 import static android.Manifest.permission.INTERNET;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static ie.moses.util.android.PermissionUtils.checkPermission;
-
+import static ie.moses.caimito.android.PermissionUtils.checkPermission;
 
 public class BackgroundMail {
 
