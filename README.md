@@ -9,8 +9,10 @@ new BackgroundMail.Builder(this)
         .withSubject("Hello")
         .withBody("This is an auto-generated message.")
         .withProgressMessage("Submitting...")
-        .withOnSuccessCallback(aVoid -> Toast.makeText(this, "Submission complete", Toast.LENGTH_SHORT))
-        .withOnFailCallback(aVoid -> Toast.makeText(this, "Submission failed", Toast.LENGTH_SHORT))
+        .withOnSuccessCallback(aVoid -> 
+                Toast.makeText(this, "Submission complete", Toast.LENGTH_SHORT))
+        .withOnFailCallback(aVoid -> 
+                Toast.makeText(this, "Submission failed", Toast.LENGTH_SHORT))
         .send();
 ```
 **Download**
