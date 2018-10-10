@@ -9,6 +9,15 @@
 
 # Add any project specific keep options here:
 
+-keep class org.apache.** { *; }
+-dontwarn org.apache.**
+
+-keep class com.sun.mail.** { *; }
+-dontwarn com.sun.mail.**
+
+-keep class java.beans.** { *; }
+-dontwarn java.beans.**
+
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:

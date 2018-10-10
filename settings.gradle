@@ -1,1 +1,1 @@
-include ':gmailbackgroundlibrary', ':caimito'
+include ':gmailbackgroundlibrary'
