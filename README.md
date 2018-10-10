@@ -1,4 +1,4 @@
-# GmailBackground
+# My fork of GmailBackground
 a small library to send a email in background withou user interaction 
 ```java
         BackgroundMail.newBuilder(this)
@@ -22,17 +22,11 @@ a small library to send a email in background withou user interaction
                 })
                 .send();
 ```
-**Gradle via jitpack**
+**Download**
 
 ```groovy
- repositories {
-        // ...
-        maven { url "https://jitpack.io" }
- }
-```
-```groovy
  dependencies {
-	        compile 'com.github.yesidlazaro:GmailBackground:1.2.0'
+	        implementation 'ie.moses.gmailbackgroundlibrary:gmailbackgroundlibrary:1.0.0'
 	}
 ```
 
