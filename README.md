@@ -9,8 +9,10 @@ a small library to send a email in background withou user interaction
                     .withSubject("Hello")
                     .withBody("This is an auto-generated message.")
                     .withProgressMessage("Submitting...")
-                    .withOnSuccessCallback(aVoid-> Toast.makeText(context, "Submission complete", Toast.LENGTH_SHORT))
-                    .withOnFailCallback(aVoid-> Toast.makeText(context, "Submission failed", Toast.LENGTH_SHORT))
+                    .withOnSuccessCallback(aVoid -> 
+                        Toast.makeText(this, "Submission complete", Toast.LENGTH_SHORT))
+                    .withOnFailCallback(aVoid -> 
+                        Toast.makeText(this, "Submission failed", Toast.LENGTH_SHORT))
                     .send();
 ```
 **Download**
