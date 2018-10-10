@@ -1,19 +1,17 @@
 # My fork of GmailBackground
 A small library to send an email in the background without user interaction .
 ```java
-        new BackgroundMail.Builder(this)
-                    .withUsername("user@gmail.com")
-                    .withPassword("password12345")
-                    .withMailto("tomail@gmail.com")
-                    .withType(EmailType.PLAIN)
-                    .withSubject("Hello")
-                    .withBody("This is an auto-generated message.")
-                    .withProgressMessage("Submitting...")
-                    .withOnSuccessCallback(aVoid -> 
-                        Toast.makeText(this, "Submission complete", Toast.LENGTH_SHORT))
-                    .withOnFailCallback(aVoid -> 
-                        Toast.makeText(this, "Submission failed", Toast.LENGTH_SHORT))
-                    .send();
+new BackgroundMail.Builder(this)
+        .withUsername("user@gmail.com")
+        .withPassword("password12345")
+        .withMailto("tomail@gmail.com")
+        .withType(EmailType.PLAIN)
+        .withSubject("Hello")
+        .withBody("This is an auto-generated message.")
+        .withProgressMessage("Submitting...")
+        .withOnSuccessCallback(aVoid -> Toast.makeText(this, "Submission complete", Toast.LENGTH_SHORT))
+        .withOnFailCallback(aVoid -> Toast.makeText(this, "Submission failed", Toast.LENGTH_SHORT))
+        .send();
 ```
 **Download**
 
