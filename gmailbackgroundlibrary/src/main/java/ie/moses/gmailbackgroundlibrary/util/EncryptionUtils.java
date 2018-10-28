@@ -1,4 +1,4 @@
-package com.creativityapps.gmailbackgroundlibrary.util;
+package ie.moses.gmailbackgroundlibrary.util;
 
 import android.util.Base64;
 import android.util.Log;

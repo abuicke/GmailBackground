@@ -1,4 +1,4 @@
-package com.creativityapps.gmailbackgroundlibrary.util;
+package ie.moses.gmailbackgroundlibrary.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

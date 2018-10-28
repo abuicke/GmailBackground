@@ -1,4 +1,4 @@
-package com.creativityapps.gmailbackgroundlibrary.util;
+package ie.moses.gmailbackgroundlibrary.util;
 
 import java.security.AccessController;
 import java.security.Provider;

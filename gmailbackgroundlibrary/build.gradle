@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def version = '1.0.1'
+def version = '1.1.0'
 
 ext {
     PUBLISH_GROUP_ID = 'ie.moses.gmailbackgroundlibrary'
@@ -10,10 +10,11 @@ ext {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 16
+        //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         versionName version
@@ -21,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -35,7 +36,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.google.guava:guava:26.0-android'
-    implementation 'ie.moses.caimito:caimito:1.0.1'
+    implementation 'ie.moses.caimito:caimito:1.5.0'
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

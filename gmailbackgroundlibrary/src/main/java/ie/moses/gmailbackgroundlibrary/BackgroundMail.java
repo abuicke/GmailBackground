@@ -1,4 +1,4 @@
-package com.creativityapps.gmailbackgroundlibrary;
+package ie.moses.gmailbackgroundlibrary;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -8,8 +8,8 @@ import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.creativityapps.gmailbackgroundlibrary.util.EmailType;
-import com.creativityapps.gmailbackgroundlibrary.util.GmailSender;
+import ie.moses.gmailbackgroundlibrary.util.EmailType;
+import ie.moses.gmailbackgroundlibrary.util.GmailSender;
 
 import java.util.ArrayList;
 import java.util.Arrays;

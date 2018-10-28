@@ -1,4 +1,4 @@
-package com.creativityapps.gmailbackgroundlibrary.util;
+package ie.moses.gmailbackgroundlibrary.util;
 
 /**
  * Created by Yesid Lazaro on 11/14/15.
