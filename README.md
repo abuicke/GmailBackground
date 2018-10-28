@@ -19,7 +19,7 @@ new BackgroundMail.Builder(this)
 
 ```groovy
 dependencies {
-    implementation 'ie.moses.gmailbackgroundlibrary:gmailbackgroundlibrary:1.0.1'
+    implementation 'ie.moses.gmailbackgroundlibrary:gmailbackgroundlibrary:1.1.0'
 }
 ```
 
